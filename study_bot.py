@@ -12,7 +12,7 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
  
 # ✅ Multiple Groq API keys rotation
 GROQ_API_KEYS = [
-    os.getenv("GROQ_API_KEY_4"),
+    os.getenv("GROQ_API_KEY_1"),
     
 ]
 GROQ_API_KEYS = [k for k in GROQ_API_KEYS if k]
