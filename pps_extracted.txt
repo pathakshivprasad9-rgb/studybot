@@ -1,0 +1,656 @@
+--- PAGE 1 ---
+Introduction & Programming with 
+ESP8266
+03010501ES01 
+Programming for Problem Solving
+Chapter -1: 
+Prof. Kiran Sharma  
+Assistant Professor 
+Department of Computer Science 
+Engineering (PIT) INTRODUCTION OF ‘C’ PROGRAMMING 
+
+--- PAGE 2 ---
+1.What is C Language?
+2.History of C Language
+3.Application Areas of C
+4.Features of C Language
+5.Structure of a C Program
+6.Execution Flow of a Program
+7.Input/Output in C
+8.Summary 
+9.References Content INDEX
+
+--- PAGE 3 ---
+1.1. What is C Language? ?
+•C is a high -level, general -purpose programming language developed by 
+Dennis Ritchie at Bell Labs in the early 1970s.
+•It is known for its efficiency, performance, and close relationship with 
+hardware, often referred to as a 'middle -level' language.
+•C provides constructs that map efficiently to typical machine instructions, 
+making it ideal for system programming.
+
+--- PAGE 4 ---
+1.1.1. Why is C Important?
+•Foundation for Many Languages: Many modern programming languages 
+(like C++, Java, Python, JavaScript) are influenced by C's syntax and 
+concepts.
+•System Programming : It's the primary language for writing operating 
+systems, compilers, and embedded systems.
+•Performance: C programs execute very fast because they are compiled 
+into machine code, offering fine -grained control over hardware.
+•Portability: C programs written on one system can often be compiled and 
+run on another with minimal changes.
+
+--- PAGE 5 ---
+1.1.2. ‘ C'as a Middle -Level Language
+•Combines features of both high -level and low -level languages.
+•High -level features: Supports structured programming, functions, and 
+data types, making it easier to read and write than assembly.
+•Low -level features: Allows direct memory manipulation via pointers, 
+bitwise operations, and direct access to hardware, similar to assembly 
+language.
+•This blend makes C powerful and flexible for a wide range of 
+applications.
+
+--- PAGE 6 ---
+1.2. History of C Language: The Roots
+•ALGOL (1960): Early structured programming language, influenced 
+many subsequent languages.
+•BCPL (Basic Combined Programming Language, 1967): Developed by 
+Martin Richards, designed for writing compilers and operating 
+systems.
+•B Language (1969): Developed by Ken Thompson at Bell Labs, a 
+simplified version of BCPL without types, used for early UNIX 
+development.
+
+--- PAGE 7 ---
+History of C Language
+ALGOL
+Basic Combined 
+Programming 
+Language (BCPL)
+B
+Traditional C
+K&R C
+ANSI C1960
+1967
+1970
+1972
+1978
+1990International Committee of the 
+Association of Computing Machinery 
+(ACM)
+Martin Richards
+Ken Thompson
+Dennis Ritchie
+Kernighan and Ritchie
+Committee of American National 
+Standard Institute (ANSI)
+
+--- PAGE 8 ---
+History of C Language: Birth of C
+•Developed by Dennis Ritchie at Bell Labs in 1972.
+•Created to rewrite the UNIX operating system, which was initially 
+written in assembly language and B.
+•Ritchie added data types and other features to B to create 'New B', 
+which later became C.
+•The name 'C' came from the fact that it was based on the 'B' language .
+
+--- PAGE 9 ---
+History of C Language: Standardization
+•K&R C (1978): The first widely influential description of C, published in 'The 
+C Programming Language' by Kernighan and Ritchie.
+•ANSI C (C89/C90): American National Standards Institute (ANSI) 
+standardized C in 1989 (ANSI X3.159 -1989), later adopted by ISO as 
+ISO/IEC 9899:1990.
+•ISO C (C99, C11, C17): The International Organization for Standardization 
+(ISO) continued to update the standard in 1999, 2011, and 2017.
+•Standardization ensured greater portability and consistency across 
+different compilers and platforms.
+
+--- PAGE 10 ---
+1.3. Application Areas of C: Operating Systems
+•C is the primary language for developing operating systems.
+•Examples: UNIX, Linux kernel, parts of Windows, macOS kernels.
+•Its low -level capabilities allow direct interaction with hardware 
+components like memory and peripherals.
+
+--- PAGE 11 ---
+Application Areas of C: System Programming
+•Used for writing compilers, assemblers, text editors, and interpreters.
+•Enables efficient creation of tools that manage computer resources 
+and translate code.
+•Example: GCC (GNU Compiler Collection) is largely written in C.
+
+--- PAGE 12 ---
+Application Areas of C: Embedded Systems
+•Ideal for programming microcontrollers and embedded systems due 
+to its memory efficiency and direct hardware access.
+•Found in: washing machines, digital cameras, smart home devices, 
+automotive systems, medical equipment.
+
+--- PAGE 13 ---
+Application Areas of C: Game Development
+•Many game engines and high -performance game logic are written in 
+C or C++.
+•C offers the speed and control necessary for complex graphics, 
+physics, and real -time simulations.
+•Example: Popular game engines like Unreal Engine use C++ (which 
+has strong C roots).
+
+--- PAGE 14 ---
+Application Areas of C: Databases
+•Core components of many database management systems (DBMS) are 
+written in C.
+•Examples: MySQL, PostgreSQL, Oracle's internal components often 
+utilize C/C++ for performance -critical operations.
+•C's efficiency is crucial for handling large volumes of data and complex 
+queries.
+
+--- PAGE 15 ---
+Application Areas of C: Network Drivers & Utilities
+•Used to create network device drivers for various hardware.
+•Tools like `ping`, `ipconfig`, and `netstat` are often implemented in 
+C.
+•C provides the necessary low -level access for interacting with 
+network interfaces and protocols.
+
+--- PAGE 16 ---
+Application Areas of C: Graphics & Animation
+•Libraries for 2D and 3D graphics (like OpenGL, DirectX APIs) are 
+often implemented in C or C++.
+•C's performance is essential for rendering complex scenes and real -
+time animation.
+•Used in CAD applications, image processing software, and visual 
+effects.
+
+--- PAGE 17 ---
+1.4. Features of C Language: Overview
+•Middle -level language
+•Simple and Efficient
+•Portability
+•Memory Management (Pointers)
+•Rich Set of Library Functions
+•Modularity (Functions)
+•Case -Sensitive
+•Compiler Based
+
+--- PAGE 18 ---
+Features of C: Simplicity & Efficiency
+•Simplicity: C has a relatively small set of keywords and a straightforward 
+syntax, making it easier to learn the core concepts.
+•Efficiency: Programs written in C are fast and efficient because they are 
+compiled directly into machine code.
+•Low overhead: C doesn't include features like garbage collection or 
+extensive runtime checks, which contributes to its speed .
+
+--- PAGE 19 ---
+Features of C: Portability
+•Source code written in C can be compiled and run on different hardware 
+platforms and operating systems with minimal or no changes.
+•This 'write once, compile anywhere' characteristic is a major advantage 
+for system -level programming.
+•Achieved through standardized libraries and a well -defined language 
+specification (ANSI/ISO C).
+
+--- PAGE 20 ---
+Features of C: Memory Management (Pointers)
+•C allows direct memory access through pointers.
+•Pointers are variables that store memory addresses.
+•This feature provides powerful control over memory, enabling efficient 
+data structures and algorithms.
+•However, it also requires careful handling to avoid common pitfalls like 
+memory leaks or segmentation faults.
+
+--- PAGE 21 ---
+Features of C: Rich Set of Library Functions
+•C comes with a standard library that provides a wide array of built -in 
+functions.
+•These functions cover common tasks like input/output (e.g., ` printf `, 
+`scanf `), string manipulation (` strlen `, `strcpy `), mathematical operations 
+(`sqrt`, `sin`), and memory allocation (`malloc`, `free`).
+•Users can also create their own custom functions and libraries.
+
+--- PAGE 22 ---
+Features of C: Modularity (Functions)
+•C promotes modular programming through the use of functions.
+•Complex problems can be broken down into smaller, manageable sub -
+problems, each handled by a dedicated function.
+•Benefits: code reusability, easier debugging, better organization, and 
+improved readability.
+
+--- PAGE 23 ---
+Features of C: Case -Sensitive
+•C is a case -sensitive language.
+•This means that 'variable', 'Variable', and 'VARIABLE' are treated as 
+three distinct identifiers.
+•Keywords, variable names, and function names must be typed with 
+consistent casing.
+
+--- PAGE 24 ---
+Features of C: Compiler Based
+•C is a compiled language, meaning source code must be translated 
+into machine code before execution.
+•A C compiler translates the high -level C code into executable binary 
+code.
+•This compilation step results in highly optimized and fast -executing 
+programs.
+
+--- PAGE 25 ---
+Program Development Steps 
+Requirement 
+Gathering 
+Analysis
+Design
+Coding
+Testing
+Maintenance Define the problem statement and decide the boundaries ofthe problem .Understand the
+problem statement and gather thepreliminary requirements .Main objective ofthis phase isto
+eliminate unimportant aspects and identify theroot problem .
+Allthe factors like Input/output, processing requirement, memory requirements, error
+handling, interfacing with other programs have tobetaken into consideration inthis stage .
+The software developer makes use oftools like algorithms and flowcharts todevelop the
+design oftheprogram :
+Algorithm isthelistofinstructions inaparticular order tosolve theproblem .
+Flowcharts areused togetthepictorial representation ofthealgorithm .
+Once thedesign process iscomplete, converting algorithm toaprogram byselecting any one
+ofthehigh level languages that issuitable fortheproblem .
+The program istested onanumber ofsuitable test cases .Running theprogram several times
+using different sets ofdata verifies whether aprogram works correctly forevery situation
+provided inthealgorithm .
+Updating and correction ofthe program forchanged conditions and field experience is
+accounted forinmaintenance .Maintenance becomes essential infollowing situations :1.
+Change inspecification 2.Change inequipment 3.Errors which arefound during the actual
+execution oftheprogram
+
+--- PAGE 26 ---
+1.5. Structure of a C Program: Overview
+•Every C program generally follows a standard structure:
+•1. Documentation Section (Optional comments)
+•2. Link Section (Header files inclusion)
+•3. Definition Section (Macro definitions)
+•4. Global Declaration Section (Global variables/functions)
+•5. Main Function Section (`main()` function)
+•6. Sub -program Section (User -defined functions)
+
+--- PAGE 27 ---
+Structure of a C Program: Header Files
+•Header files contain declarations of functions and macros.
+•They are included at the beginning of a C program using the 
+`#include` preprocessor directive.
+•Syntax: `#include < filename.h >` (for standard library headers) or 
+`#include " filename.h "` (for user -defined headers).
+•Example: `#include < stdio.h >` for standard input/output functions.
+
+--- PAGE 28 ---
+Structure of a C Program: Main Function
+•The `main()` function is the entry point of every C program.
+•Program execution begins and ends within `main()`, unless explicit 
+calls are made to other functions.
+•Syntax: `int main() { /* code */ return 0; }`
+•The `int` indicates it returns an integer (usually 0 for success) and 
+`return 0;` signifies successful program termination.
+
+--- PAGE 29 ---
+Structure of a C Program: Declaration Section
+•This section is where variables, constants, and data types are declared.
+•Variables must be declared before they are used in the program.
+•Declarations can be placed at the beginning of the `main()` function or 
+within specific blocks of code.
+•Example: `int num;` or `float price = 19.99;`
+
+--- PAGE 30 ---
+Structure of a C Program: Executable Section
+•This section contains the actual logic and instructions of the 
+program.
+•It includes statements for computations, input/output operations, 
+control flow (loops, conditionals), and function calls.
+•All statements within the executable section must end with a 
+semicolon (`;`).
+•Example: ` printf ("Hello, World!");` or `sum = a + b;`
+
+--- PAGE 31 ---
+Structure of a C Program: Comments
+•Comments are explanatory notes within the code, ignored by the 
+compiler.
+•They improve code readability and maintainability for developers.
+•Single -line comments: Start with `//` (C99 standard). Example: `// 
+This is a single -line comment`
+•Multi -line comments: Enclosed between `/*` and `*/`. Example: `/* 
+This is a multi -line comment */`
+
+--- PAGE 32 ---
+Documentation
+Section
+Preprocessor
+Section
+Definition 
+Section
+Global Declaration 
+Section
+main() 
+Section
+User Defined 
+Function (UDF) 
+SectionThis section consists ofthe description ofthe program, the name ofthe
+program, and thecreation date and time oftheprogram .Itisspecified at
+thestart oftheprogram intheform ofcomments .
+Alltheheader files oftheprogram willbedeclared here .
+The #define preprocessor isused tocreate aconstant throughout the
+program .Whenever this name isencountered bythecompiler, itisreplaced
+bytheactual piece ofdefined code .
+Variables and functions which are declared inthis scope can beused
+anywhere intheprogram .
+Itcontains main function .
+User defined functions canbedefined and declared here .Structure of C program : Tabular form
+
+--- PAGE 33 ---
+The main function
+main () Function name
+{ Start of program
+……………………….
+………………………. Program statements
+……………………….
+} End of program
+“Only one main function isthere inaCprogram .Itisnotpossible tocreate
+more than one main functions inaCprogram .”
+
+
+--- PAGE 34 ---
+The main function
+•Different forms of main statement:
+•intmain() –
+❖intmeans that thefunction returns aninteger value totheoperating system .
+❖return 0;must bewritten attheend oftheprogram ifintmain() isused .
+•void main() –
+❖void means that the function does not return information tothe operating
+system .
+❖getch ();must bewritten attheend oftheprogram ifvoid main() isused .
+
+--- PAGE 35 ---
+The #define directive 
+•It is a preprocessor compiler directive.
+•It is not a statement.
+•It is placed at the beginning before the main() function.
+•It is generally written in uppercase.
+•It is used to define symbolic constants.
+•Examples:
+#define PI 3.14
+#define PRINCIPAL 5000.00
+
+--- PAGE 36 ---
+The #include directive 
+•Cprograms aredivided onto modules orfunctions .Some functions are
+stored inClibrary .
+•Library functions aregrouped category -wise and stored indifferent files
+known as“HeaderFiles” .
+•Ifwewant toaccess those functions, itisnecessary totellthecompiler
+about theheader files tobeaccessed .
+•This isachieved byusing the#include directive .
+•Itisplaced atthebeginning before themain() function .
+
+--- PAGE 37 ---
+The #include directive 
+•Examples :
+1.#include<stdio .h>:Standard i/olibrary functions
+2.#include<conio .h>:Console i/olibrary functions
+3.#include<math .h>:Mathematical functions
+4.#inlcude<time .h>:Time manipulation functions
+5.#include<string .h>:String manipulation functions
+6.#include<stdlib.h> : String conversation routines, Memory 
+allocation routines, Random number generator
+
+--- PAGE 38 ---
+Comments in C Program 
+•The lines beginning with /*and ending with */areknown
+as“Comments” .
+•Comments areused toenhanceprogram’s readability and
+understanding .
+•Comments arenotexecutable statements .
+
+--- PAGE 39 ---
+1.6. Execution Flow of a C Program: Overview
+•1. Preprocessing: -Handles directives like `#include` (inserts header file 
+content) and `#define` (macro substitution). , -Generates an expanded 
+source file (. i).
+•2. Compilation: -Translates the preprocessed code into assembly code 
+(.s).
+•3. Assembly: -Converts assembly code into machine -readable object code 
+(.o or .obj).
+•4. Linking :-Combines object files with necessary library functions to 
+create an executable file (.exe or a.out ).
+•5. Loading and Execution: -The executable file is loaded into memory and 
+the program runs.
+
+--- PAGE 40 ---
+Execution Flow: Compilation & Linking
+•Compiler (` gcc`): Takes the source code (`.c` file) and translates it into 
+machine -understandable object code (`.o` file).
+•This stage checks for syntax errors, type errors, etc.
+•Linker: The object code is not yet a complete program.
+•It needs to be linked with libraries (like ` stdio.h`'s `printf ` function) 
+and other object files if present.
+•The linker resolves external references and creates the final 
+executable program.
+
+--- PAGE 41 ---
+Execution Flow: Loading and Runtime
+•Loader: Once the executable is created, the operating system's loader 
+places the program into memory.
+•Execution: The CPU then starts executing the machine instructions, 
+beginning from the `main()` function.
+•The program interacts with the user (input/output), performs 
+computations, and uses system resources as defined by its code.
+•The program terminates when `main()` returns or when an exit 
+function is called.
+
+--- PAGE 42 ---
+1.7. Input/Output in C
+•C provides a set of standard library functions for input and output 
+operations, mostly found in `< stdio.h >` (Standard Input/Output).
+•These functions handle interaction with standard input (keyboard) and 
+standard output (screen).
+•Two main categories:
+• -Character I/O: Reads/writes single characters (e.g., ` getchar ()`, 
+`putchar ()`).
+• -Formatted I/O: Reads/writes data of various types using format 
+specifiers (e.g., ` scanf ()`, `printf ()`).
+
+--- PAGE 43 ---
+1.7.1. Reading a Character: ` getchar ()`
+•Definition: The ` getchar ()` function reads a single character from the 
+standard input (usually the keyboard).
+•Return Type: It returns the character read as an integer (its ASCII value) or 
+`EOF` (End -Of-File) on failure or end of input.
+•Header: Declared in `< stdio.h >`.
+•Usage: Commonly used for character -by-character input, like reading text 
+files or processing user input without waiting for a newline.
+
+--- PAGE 44 ---
+`getchar ()` Example
+•#include < stdio.h >
+•int main() {
+• char ch;
+• printf ("Enter a character: ");
+• ch= getchar (); // Read a single character
+• printf ("You entered: ");
+• putchar (ch);    // Output the character (next slide)
+• printf ("\n");
+• return 0;
+•}
+•Output (if 'A' is entered):
+•Enter a character: A
+•You entered: A
+
+--- PAGE 45 ---
+1.7.2. Writing a Character: ` putchar ()`
+•Definition: The ` putchar ()` function writes a single character to the 
+standard output (usually the screen).
+•Argument: It takes an integer argument, which represents the character 
+(its ASCII value) to be printed.
+•Return Type: Returns the character written on success, or `EOF` on error.
+•Header: Declared in `< stdio.h >`.
+•Usage: Useful for printing individual characters, often in loops for string 
+output.
+
+--- PAGE 46 ---
+`putchar ()` Example
+•#include < stdio.h >
+•int main() {
+• char char1 = 'H';
+• char char2 = ' i';
+• putchar (char1);
+• putchar (char2);
+• putchar ('\n'); // Newline character
+• return 0;
+•}
+•Output:
+•Hi
+
+--- PAGE 47 ---
+1.7.3. Formatted Input: Introduction
+•Formatted I/O functions allow you to read and write data of specific 
+types (integers, floats, strings, etc.) in a structured way.
+•They use 'format specifiers' to define the type of data being handled.
+•This is in contrast to character -by-character I/O, which only deals with 
+single characters.
+•The primary function for formatted input is ` scanf ()`.
+
+--- PAGE 48 ---
+Formatted Input: ` scanf ()` Function
+•Definition: The ` scanf ()` function reads formatted input from the standard 
+input (keyboard).
+•Syntax: `int scanf ("format string", &variable1, &variable2, ...);`
+• -`format string`: A string containing format specifiers and optional 
+literal characters.
+• -`&variable`: The address of the variable where the input value will 
+be stored (the `&` is crucial!).
+•Return Type: Returns the number of items successfully read and assigned, 
+or `EOF` on failure.
+•Header: Declared in `< stdio.h >`.
+
+--- PAGE 49 ---
+Formatted Input: ` scanf ()` Format Specifiers
+•`%d`: Reads an integer (decimal)
+•`%f`: Reads a floating -point number (float)
+•`%lf`: Reads a double -precision floating -point number (double)
+•`%c`: Reads a single character
+•`%s`: Reads a string (sequence of characters until whitespace, stored 
+in a character array, no `&` needed for arrays)
+•`%x` or `%X`: Reads a hexadecimal integer
+•`%o`: Reads an octal integer
+
+--- PAGE 50 ---
+`scanf ()` Example: Reading an Integer
+• #include < stdio.h >
+• int main() {
+• int age;
+• printf ("Enter your age: ");
+• scanf ("%d", &age); // Read an integer
+• printf ("You are %d years old. \n", age);
+• return 0;
+• }
+• Output (if 30 is entered):
+• Enter your age: 30
+• You are 30 years old.
+
+--- PAGE 51 ---
+`scanf ()` Example: Reading Multiple Types
+•#include < stdio.h >
+•int main() {
+• char name[20];
+• float height;
+• printf ("Enter name and height (e.g., John 1.75): ");
+• scanf ("%s %f", name, &height); // Read string and float
+• printf ("Name: %s, Height: %.2f meters \n", name, height);
+• return 0;
+•}
+•Output (if 'Alice 1.68' is entered):
+•Enter name and height (e.g., John 1.75): Alice 1.68
+•Name: Alice, Height: 1.68 meters
+
+--- PAGE 52 ---
+1.7.4. Formatted Output: ` printf ()` Function
+•Definition: The ` printf ()` function sends formatted output to the standard 
+output (screen).
+•Syntax: `int printf ("format string", argument1, argument2, ...);`
+• -`format string`: A string containing text to be printed along with 
+format specifiers.
+• -`arguments`: Variables or values to be printed, corresponding to 
+the format specifiers.
+•Return Type: Returns the number of characters printed, or a negative 
+value on error.
+•Header: Declared in `< stdio.h >`.
+
+--- PAGE 53 ---
+Formatted Output: ` printf ()` Format Specifiers
+•`%d` or `% i`: Prints an integer (decimal)
+•`%f`: Prints a floating -point number (float, double) -default 6 decimal 
+places
+•`%.Nf`: Prints a floating -point number with N decimal places (e.g., `%.2f`)
+•`%c`: Prints a single character
+•`%s`: Prints a string (character array)
+•`%x` or `%X`: Prints a hexadecimal integer (lowercase/uppercase)
+•`%o`: Prints an octal integer
+•`%%`: Prints a literal percent sign
+
+--- PAGE 54 ---
+`printf ()` Example: Basic Output
+•#include < stdio.h >
+•int main() {
+• printf ("Hello, C Programming! \n"); // Simple string with newline
+• return 0;
+•}
+•Output:
+•Hello, C Programming!
+
+--- PAGE 55 ---
+`printf ()` Example: Multiple Values & Newline
+•`#include < stdio.h >
+•int main() {
+• int num = 10;
+• float pi = 3.14159;
+• char grade = 'A';
+• printf ("Number: %d, PI: %f, Grade: %c \n", num, pi, grade);
+• return 0;
+•}
+•Output:
+•Number: 10, PI: 3.141590, Grade: A
+
+--- PAGE 56 ---
+`printf ()` Example: Precision and Width
+• `#include < stdio.h >
+• int main() {
+• float value = 123.45678;
+• int count = 5;
+• printf ("Value (2 decimal places): %.2f \n", value);
+• printf ("Value (total width 10, 2 dec): %10.2f \n", value);
+• printf ("Count (padded with spaces): %5d \n", count);
+• return 0;
+• }
+• Output:
+• Value (2 decimal places): 123.46
+• Value (total width 10, 2 dec):     123.46
+• Count (padded with spaces):     5
+
+--- PAGE 57 ---
+1.8. Summary & Key Takeaways
+•C is a powerful, efficient, and portable middle -level programming 
+language.
+•It forms the backbone of operating systems, embedded systems, and 
+many performance -critical applications.
+•Understanding C's structure (header files, `main()`, sections) is 
+fundamental.
+•The execution flow involves preprocessing, compilation, assembly, 
+linking, loading, and runtime.
+•Character I/O (` getchar ()`, `putchar ()`) handles single characters.
+•Formatted I/O (` scanf ()`, `printf ()`) allows versatile input/output using 
+format specifiers.
+
+--- PAGE 58 ---
+1.9. References 
+•C Language Introduction –GeeksforGeeks
+•Introduction to C
+•What is C Programming Language? Basics, Introduction, History
+•ntrgdc.ac.in/ userfiles /file/Course Materials/ MPCS_Basics of 
+C.pdf
