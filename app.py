@@ -326,6 +326,34 @@ def auth_initdata():
     return jsonify({"error": "Invalid signature"}), 401
 
 
+@app.route("/api/auth/web", methods=["POST"])
+def auth_web():
+    """Normal web login endpoint without requiring Telegram."""
+    data = request.json or {}
+    name = data.get("name", "").strip() or "Web Student"
+    username = data.get("username", "").strip() or name.lower().replace(" ", "_")
+
+    # Generate a unique deterministic numeric user_id from username/name
+    import hashlib
+    user_id = int(hashlib.md5(f"web_{username}".encode()).hexdigest(), 16) % (10**9)
+
+    session["user_id"] = user_id
+    session["first_name"] = name
+    session["username"] = username
+
+    # Ensure user is registered in memory & Supabase
+    study_bot.load_user_into_memory(user_id, name, username)
+
+    return jsonify({
+        "status": "authenticated",
+        "user": {
+            "id": user_id,
+            "first_name": name,
+            "username": username
+        }
+    })
+
+
 @app.route("/api/auth/logout", methods=["POST"])
 def auth_logout():
     session.clear()
