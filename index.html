@@ -18,7 +18,8 @@
     <!-- PrismJS for Monospace Syntax Highlighting -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN + Fallback CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -80,10 +81,113 @@
             --mint-ok: #4ade80;
         }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             background-color: var(--void);
             color: #ede7f6;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', 'Inter', sans-serif;
+        }
+
+        button, input, textarea {
+            font-family: inherit;
+        }
+
+        /* Vanilla CSS Fallbacks for Core UI components */
+        .hidden { display: none !important; }
+
+        /* Login Screen Vanilla Fallbacks */
+        #login-container {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, #14111f 0%, #08060f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .login-card-inner {
+            position: relative;
+            background: rgba(20, 17, 31, 0.9);
+            border: 1px solid #1c1830;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            padding: 36px 28px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        #tg-login-btn {
+            background-color: #f0b429 !important;
+            color: #08060f !important;
+            font-weight: 700 !important;
+            border-radius: 12px !important;
+            padding: 14px 20px !important;
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            box-shadow: 0 4px 15px rgba(240, 180, 41, 0.25) !important;
+            transition: all 0.2s ease !important;
+        }
+        #tg-login-btn:hover {
+            background-color: #fbbf24 !important;
+            transform: translateY(-1px) !important;
+        }
+
+        #web-login-submit {
+            background-color: #14111f !important;
+            border: 1px solid rgba(157, 111, 255, 0.5) !important;
+            color: #9d6fff !important;
+            font-weight: 700 !important;
+            border-radius: 12px !important;
+            padding: 14px 20px !important;
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            transition: all 0.2s ease !important;
+        }
+        #web-login-submit:hover {
+            background-color: #9d6fff !important;
+            color: #08060f !important;
+        }
+
+        input[type="text"], textarea {
+            background-color: #08060f !important;
+            border: 1px solid #1c1830 !important;
+            color: #ffffff !important;
+            border-radius: 12px !important;
+            padding: 10px 14px !important;
+            font-size: 14px !important;
+            outline: none !important;
+            width: 100% !important;
+        }
+        input[type="text"]:focus, textarea:focus {
+            border-color: #9d6fff !important;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -100,8 +204,6 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--surface-raised); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--aura-violet); }
-
-        .hidden { display: none !important; }
 
         .skeleton {
             background: linear-gradient(90deg, var(--surface) 25%, var(--surface-raised) 50%, var(--surface) 75%);
@@ -234,7 +336,7 @@
 
     <!-- Login Screen -->
     <div id="login-container" class="fixed inset-0 bg-[radial-gradient(circle_at_center,_var(--surface)_0%,_var(--void)_100%)] flex items-center justify-center z-[1000] p-5 hidden">
-        <div class="relative bg-surface/80 border border-surface-raised rounded-3xl w-full max-w-[440px] p-10 text-center shadow-2xl backdrop-blur-md overflow-hidden state-idle">
+        <div class="login-card-inner relative bg-surface/80 border border-surface-raised rounded-3xl w-full max-w-[440px] p-10 text-center shadow-2xl backdrop-blur-md overflow-hidden state-idle">
             <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-aura-gold to-aura-violet"></div>
             <div class="mb-8">
                 <svg class="ring-svg w-16 h-16 mx-auto mb-4" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
