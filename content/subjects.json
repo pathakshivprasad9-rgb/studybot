@@ -1,0 +1,76 @@
+{
+  "subjects": [
+    {
+      "id": "sub-1",
+      "code": "PPS",
+      "name": "Principles of Programming Skills",
+      "icon": "💻",
+      "chapters": [
+        { "id": "ch-1", "name": "Introduction of C Programming", "status": "available", "has_content": true },
+        { "id": "ch-2", "name": "Chapter 2", "status": "placeholder", "has_content": false },
+        { "id": "ch-3", "name": "Chapter 3", "status": "placeholder", "has_content": false },
+        { "id": "ch-4", "name": "Chapter 4", "status": "placeholder", "has_content": false }
+      ]
+    },
+    {
+      "id": "sub-2",
+      "code": "SUB2",
+      "name": "Subject 2",
+      "icon": "📘",
+      "chapters": [
+        { "id": "ch-1", "name": "Chapter 1", "status": "placeholder", "has_content": false },
+        { "id": "ch-2", "name": "Chapter 2", "status": "placeholder", "has_content": false },
+        { "id": "ch-3", "name": "Chapter 3", "status": "placeholder", "has_content": false },
+        { "id": "ch-4", "name": "Chapter 4", "status": "placeholder", "has_content": false }
+      ]
+    },
+    {
+      "id": "sub-3",
+      "code": "SUB3",
+      "name": "Subject 3",
+      "icon": "📗",
+      "chapters": [
+        { "id": "ch-1", "name": "Chapter 1", "status": "placeholder", "has_content": false },
+        { "id": "ch-2", "name": "Chapter 2", "status": "placeholder", "has_content": false },
+        { "id": "ch-3", "name": "Chapter 3", "status": "placeholder", "has_content": false },
+        { "id": "ch-4", "name": "Chapter 4", "status": "placeholder", "has_content": false }
+      ]
+    },
+    {
+      "id": "sub-4",
+      "code": "SUB4",
+      "name": "Subject 4",
+      "icon": "📙",
+      "chapters": [
+        { "id": "ch-1", "name": "Chapter 1", "status": "placeholder", "has_content": false },
+        { "id": "ch-2", "name": "Chapter 2", "status": "placeholder", "has_content": false },
+        { "id": "ch-3", "name": "Chapter 3", "status": "placeholder", "has_content": false },
+        { "id": "ch-4", "name": "Chapter 4", "status": "placeholder", "has_content": false }
+      ]
+    },
+    {
+      "id": "sub-5",
+      "code": "SUB5",
+      "name": "Subject 5",
+      "icon": "📕",
+      "chapters": [
+        { "id": "ch-1", "name": "Chapter 1", "status": "placeholder", "has_content": false },
+        { "id": "ch-2", "name": "Chapter 2", "status": "placeholder", "has_content": false },
+        { "id": "ch-3", "name": "Chapter 3", "status": "placeholder", "has_content": false },
+        { "id": "ch-4", "name": "Chapter 4", "status": "placeholder", "has_content": false }
+      ]
+    },
+    {
+      "id": "sub-6",
+      "code": "SUB6",
+      "name": "Subject 6",
+      "icon": "📓",
+      "chapters": [
+        { "id": "ch-1", "name": "Chapter 1", "status": "placeholder", "has_content": false },
+        { "id": "ch-2", "name": "Chapter 2", "status": "placeholder", "has_content": false },
+        { "id": "ch-3", "name": "Chapter 3", "status": "placeholder", "has_content": false },
+        { "id": "ch-4", "name": "Chapter 4", "status": "placeholder", "has_content": false }
+      ]
+    }
+  ]
+}
