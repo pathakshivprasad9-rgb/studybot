@@ -110,7 +110,15 @@
         }
 
         /* Aura Ring States */
-        .ring-svg { transition: all 0.3s ease; }
+        .ring-svg {
+            transition: all 0.3s ease;
+            max-width: 80px;
+            max-height: 80px;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            display: block;
+        }
         .state-idle .ring-svg { animation: aura-breathe 4s infinite ease-in-out; }
         .state-thinking .ring-svg { animation: aura-thinking 1s infinite linear; filter: drop-shadow(0 0 20px var(--aura-violet)); stroke: var(--aura-violet); }
         .state-warning .ring-svg { stroke: #f59e0b; filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.6)); }
@@ -857,7 +865,13 @@
                         showToast("Web login failed. Try again.");
                     }
                 } catch (err) {
-                    showToast("Network error during web login.");
+                    console.log("Network error or file:// protocol mode — using local guest session.");
+                    telegramUser = {
+                        id: Date.now(),
+                        first_name: name,
+                        username: username || name.toLowerCase().replace(/\s+/g, "_")
+                    };
+                    loginSuccess();
                 } finally {
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = "<span>🚀</span> Start Learning Now";
