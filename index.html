@@ -241,13 +241,34 @@
                 <p class="text-gray-400 text-sm">Study companion. Zero sugarcoating.</p>
             </div>
             <p class="text-gray-400 text-sm mb-8 leading-relaxed">Sign in with Telegram to pick up your chat history, memory, and stats.</p>
-            <button id="tg-login-btn" class="w-full py-4 px-6 bg-aura-gold text-void font-bold rounded-xl hover:bg-yellow-400 transition-all shadow-[0_4px_15px_rgba(240,180,41,0.2)] hover:shadow-[0_6px_20px_rgba(240,180,41,0.4)] flex items-center justify-center gap-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2"/></svg> Login via Telegram
+            <button id="tg-login-btn" class="w-full py-3.5 px-6 bg-aura-gold text-void font-bold rounded-xl hover:bg-yellow-400 transition-all shadow-[0_4px_15px_rgba(240,180,41,0.2)] hover:shadow-[0_6px_20px_rgba(240,180,41,0.4)] flex items-center justify-center gap-2 text-sm">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2"/></svg> Login via Telegram
             </button>
-            <div id="desktop-login-status" class="mt-6 hidden">
-                <div class="w-6 h-6 rounded-full bg-aura-gold animate-ping mx-auto mb-4"></div>
+            <div id="desktop-login-status" class="mt-4 hidden">
+                <div class="w-5 h-5 rounded-full bg-aura-gold animate-ping mx-auto mb-2"></div>
                 <p class="text-aura-gold text-xs">Open the bot in Telegram and confirm...</p>
             </div>
+
+            <!-- Divider -->
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-surface-raised"></div></div>
+                <div class="relative flex justify-center text-[10px] uppercase tracking-wider"><span class="bg-surface px-3 text-gray-500 font-mono">Or Continue With Web</span></div>
+            </div>
+
+            <!-- Normal Web Login Form -->
+            <form id="web-login-form" class="space-y-3 text-left">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Your Name</label>
+                    <input type="text" id="web-login-name" placeholder="e.g. Shrey Pathak" required class="w-full h-11 px-3.5 bg-void border border-surface-raised rounded-xl text-white text-sm outline-none focus:border-aura-violet transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Username (Optional)</label>
+                    <input type="text" id="web-login-username" placeholder="e.g. shreyanshhh_08" class="w-full h-11 px-3.5 bg-void border border-surface-raised rounded-xl text-white text-sm outline-none focus:border-aura-violet transition-colors">
+                </div>
+                <button type="submit" id="web-login-submit" class="w-full py-3.5 px-6 bg-surface border border-aura-violet/50 hover:border-aura-violet text-aura-violet hover:bg-aura-violet hover:text-void font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                    <span>🚀</span> Start Learning Now
+                </button>
+            </form>
         </div>
     </div>
 
@@ -807,6 +828,42 @@
                 desktopLoginStatus.classList.add("hidden");
             }
         });
+
+        const webLoginForm = document.getElementById("web-login-form");
+        if (webLoginForm) {
+            webLoginForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const name = document.getElementById("web-login-name").value.trim();
+                const username = document.getElementById("web-login-username").value.trim();
+                const submitBtn = document.getElementById("web-login-submit");
+
+                if (!name) return;
+
+                submitBtn.disabled = true;
+                submitBtn.innerText = "Signing in...";
+
+                try {
+                    const resp = await fetch("/api/auth/web", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name, username })
+                    });
+
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        telegramUser = data.user;
+                        loginSuccess();
+                    } else {
+                        showToast("Web login failed. Try again.");
+                    }
+                } catch (err) {
+                    showToast("Network error during web login.");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = "<span>🚀</span> Start Learning Now";
+                }
+            });
+        }
 
         function pollAuthStatus(sessionId) {
             if (authPollInterval) clearInterval(authPollInterval);
