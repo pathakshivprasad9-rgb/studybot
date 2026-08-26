@@ -271,11 +271,12 @@ def security_headers(response):
     """
     response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' https://telegram.org https://cdnjs.cloudflare.com; "
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
+        "script-src 'self' 'unsafe-inline' https://telegram.org https://cdnjs.cloudflare.com https://accounts.google.com https://accounts.google.com/gsi/client; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; "
         "font-src 'self' https://fonts.gstatic.com; "
-        "img-src 'self' data:; "
-        "connect-src 'self'"
+        "img-src 'self' data: https://*.googleusercontent.com; "
+        "frame-src https://accounts.google.com; "
+        "connect-src 'self' https://accounts.google.com"
     )
     response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-Content-Type-Options'] = 'nosniff'
