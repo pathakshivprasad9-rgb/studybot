@@ -997,23 +997,6 @@
             <div id="desktop-login-status" class="hidden" style="margin-top: 14px;">
                 <p style="color: var(--color-yellow-dark); font-size: 12px; font-weight: 600;">Confirm login in your Telegram app...</p>
             </div>
-
-            <div class="divider"><span>OR CONTINUE WITH WEB</span></div>
-
-            <!-- Web Login Form -->
-            <form id="web-login-form" style="display: flex; flex-direction: column; gap: 12px; text-align: left;">
-                <div>
-                    <label style="font-size: 12px; font-weight: 600; color: var(--color-dark-gray); display: block; margin-bottom: 4px;">Your Name</label>
-                    <input type="text" id="web-login-name" placeholder="e.g. Shrey Pathak" required>
-                </div>
-                <div>
-                    <label style="font-size: 12px; font-weight: 600; color: var(--color-dark-gray); display: block; margin-bottom: 4px;">Username (Optional)</label>
-                    <input type="text" id="web-login-username" placeholder="e.g. shrey_08">
-                </div>
-                <button type="submit" id="web-login-submit" class="btn btn-secondary" style="width: 100%; padding: 12px; font-weight: 700; margin-top: 4px;">
-                    Start Learning Now →
-                </button>
-            </form>
         </div>
     </div>
 
@@ -1416,46 +1399,6 @@
                 recognition.onend = () => { voiceBtn.style.color = ""; };
             } else {
                 if (voiceBtn) voiceBtn.style.display = "none";
-            }
-
-            // Web Login Form Handler
-            const webLoginForm = document.getElementById("web-login-form");
-            if (webLoginForm) {
-                webLoginForm.addEventListener("submit", async (e) => {
-                    e.preventDefault();
-                    const name = document.getElementById("web-login-name").value.trim();
-                    const username = document.getElementById("web-login-username").value.trim();
-                    const submitBtn = document.getElementById("web-login-submit");
-
-                    if (!name) return;
-                    submitBtn.disabled = true;
-                    submitBtn.innerText = "Signing in...";
-
-                    try {
-                        const resp = await fetch("/api/auth/web", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ name, username })
-                        });
-
-                        if (resp.ok) {
-                            const data = await resp.json();
-                            telegramUser = data.user;
-                            loginSuccess();
-                        } else {
-                            // Offline fallback
-                            telegramUser = { id: Date.now(), first_name: name, username: username || name.toLowerCase().replace(/\s+/g, '_') };
-                            loginSuccess();
-                        }
-                    } catch (err) {
-                        // Offline file:// fallback
-                        telegramUser = { id: Date.now(), first_name: name, username: username || name.toLowerCase().replace(/\s+/g, '_') };
-                        loginSuccess();
-                    } finally {
-                        submitBtn.disabled = false;
-                        submitBtn.innerText = "Start Learning Now →";
-                    }
-                });
             }
 
             checkAuth();
