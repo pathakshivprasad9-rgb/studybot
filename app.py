@@ -654,45 +654,6 @@ def auth_initdata():
     return jsonify({"error": "Invalid signature"}), 401
 
 
-@app.route("/api/auth/web", methods=["POST"])
-def auth_web():
-    """Normal web login endpoint without requiring Telegram."""
-    data = request.json or {}
-    name = data.get("name", "").strip() or "Web Student"
-    username = data.get("username", "").strip() or name.lower().replace(" ", "_")
-
-    # Generate a unique deterministic numeric user_id from username/name
-    import hashlib
-    user_id = int(hashlib.md5(f"web_{username}".encode()).hexdigest(), 16) % (10**9)
-
-    session["user_id"] = user_id
-    session["first_name"] = name
-    session["username"] = username
-    session["email"] = ""  # self-reported web logins have no verified email
-
-    # Ensure user is registered in memory & Supabase
-    study_bot.load_user_into_memory(user_id, name, username)
-
-    # Record login in Supabase user_logins
-    sb_record_login(
-        user_id=user_id,
-        username=username,
-        first_name=name,
-        login_type="web",
-        ip=request.remote_addr or "",
-        user_agent=request.headers.get("User-Agent", "")
-    )
-
-    return jsonify({
-        "status": "authenticated",
-        "user": {
-            "id": user_id,
-            "first_name": name,
-            "username": username
-        }
-    })
-
-
 @app.route("/api/auth/google", methods=["POST"])
 def auth_google():
     """Handle Google Identity Services login credential token.
