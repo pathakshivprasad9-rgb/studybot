@@ -6,11 +6,16 @@ import hashlib
 import json
 import urllib.parse
 import random
+import logging
 import requests
+from datetime import datetime, timezone, timedelta
 from html import escape
 from functools import wraps
 from flask import Flask, request, jsonify, session, send_from_directory
 from flask_cors import CORS
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Import AI + Supabase helpers from study_bot (same Supabase project the Telegram bot uses)
 import study_bot
@@ -40,6 +45,48 @@ app.secret_key = _secret_key
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["PERMANENT_SESSION_LIFETIME"] = 86400  # 24 hours
+
+
+# ── ADMIN ACCESS CONTROL ──
+# Admins are whoever is already logged in (via Telegram, Google, or web
+# login) AND whose user_id or username appears in these allowlists.
+# Set ADMIN_USER_IDS and/or ADMIN_USERNAMES in your environment variables.
+def _parse_admin_allowlist():
+    ids = set()
+    for part in os.environ.get("ADMIN_USER_IDS", "").split(","):
+        part = part.strip()
+        if part.isdigit():
+            ids.add(int(part))
+    names = set()
+    for part in os.environ.get("ADMIN_USERNAMES", "").split(","):
+        part = part.strip().lstrip("@").lower()
+        if part:
+            names.add(part)
+    return ids, names
+
+ADMIN_USER_IDS, ADMIN_USERNAMES = _parse_admin_allowlist()
+
+
+def is_admin_session() -> bool:
+    uid = session.get("user_id")
+    uname = (session.get("username") or "").lstrip("@").lower()
+    if uid is not None and uid in ADMIN_USER_IDS:
+        return True
+    if uname and uname in ADMIN_USERNAMES:
+        return True
+    return False
+
+
+def admin_required(f):
+    """Decorator: only allow logged-in users on the admin allowlist."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if "user_id" not in session:
+            return jsonify({"error": "Authentication required"}), 401
+        if not is_admin_session():
+            return jsonify({"error": "Admin access required"}), 403
+        return f(*args, **kwargs)
+    return decorated
 
 @app.after_request
 def apply_security_headers(response):
@@ -293,6 +340,163 @@ def sb_count_user_messages(session_id: str) -> int:
     return sum(1 for m in msgs if m.get("role") == "user")
 
 
+# ── ADMIN USAGE DASHBOARD HELPERS ──
+# These only ever read ids, roles, and timestamps — never message content —
+# and are capped so the dashboard stays cheap even as the tables grow.
+
+def sb_get_all_logins(limit: int = 2000) -> list:
+    """Most recent login events, newest first."""
+    try:
+        r = requests.get(
+            f"{SUPABASE_URL}/rest/v1/user_logins"
+            f"?select=user_id,username,first_name,login_type,ip_address,created_at"
+            f"&order=created_at.desc&limit={limit}",
+            headers=_sb_headers(), timeout=10
+        )
+        if r.status_code == 200:
+            return r.json()
+    except Exception as e:
+        logger.warning("Supabase get_all_logins error: %s", e)
+    return []
+
+
+def sb_get_all_sessions_light(limit: int = 5000) -> list:
+    """Lightweight id -> user_id map of chat sessions, for usage aggregation."""
+    try:
+        r = requests.get(
+            f"{SUPABASE_URL}/rest/v1/chat_sessions"
+            f"?select=id,user_id&order=created_at.desc&limit={limit}",
+            headers=_sb_headers(), timeout=10
+        )
+        if r.status_code == 200:
+            return r.json()
+    except Exception as e:
+        logger.warning("Supabase get_all_sessions_light error: %s", e)
+    return []
+
+
+def sb_get_all_messages_light(limit: int = 10000) -> list:
+    """(session_id, role, created_at) for recent messages — counts only, no content."""
+    try:
+        r = requests.get(
+            f"{SUPABASE_URL}/rest/v1/chat_messages"
+            f"?select=session_id,role,created_at&order=created_at.desc&limit={limit}",
+            headers=_sb_headers(), timeout=15
+        )
+        if r.status_code == 200:
+            return r.json()
+    except Exception as e:
+        logger.warning("Supabase get_all_messages_light error: %s", e)
+    return []
+
+
+def _parse_ts(ts: str | None):
+    if not ts:
+        return None
+    try:
+        return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    except Exception:
+        return None
+
+
+def build_usage_report() -> dict:
+    """Aggregate login/session/message data into an admin usage report."""
+    logins = sb_get_all_logins()
+    sessions = sb_get_all_sessions_light()
+    messages = sb_get_all_messages_light()
+
+    now = datetime.now(timezone.utc)
+    today_cutoff = now - timedelta(hours=24)
+    week_cutoff = now - timedelta(days=7)
+
+    # session_id -> user_id, for attributing messages to a user
+    session_owner = {s["id"]: s.get("user_id") for s in sessions if s.get("id")}
+
+    # Per-user message counts (student-authored messages only)
+    msg_counts: dict = {}
+    for m in messages:
+        if m.get("role") != "user":
+            continue
+        uid = session_owner.get(m.get("session_id"))
+        if uid is None:
+            continue
+        msg_counts[uid] = msg_counts.get(uid, 0) + 1
+
+    # Per-user login aggregation. Logins arrive newest-first, so the first
+    # row seen for a user is their most recent login.
+    users: dict = {}
+    login_type_breakdown: dict = {}
+    active_today, active_week = set(), set()
+
+    for row in logins:
+        uid = row.get("user_id")
+        if uid is None:
+            continue
+        ts = _parse_ts(row.get("created_at"))
+        ltype = row.get("login_type") or "unknown"
+        login_type_breakdown[ltype] = login_type_breakdown.get(ltype, 0) + 1
+
+        rec = users.get(uid)
+        if rec is None:
+            rec = {
+                "user_id": uid,
+                "first_name": row.get("first_name") or "",
+                "username": row.get("username") or "",
+                "login_types": set(),
+                "login_count": 0,
+                "first_seen": ts,
+                "last_seen": ts,
+            }
+            users[uid] = rec
+
+        rec["login_count"] += 1
+        rec["login_types"].add(ltype)
+        if ts and (rec["last_seen"] is None or ts > rec["last_seen"]):
+            rec["last_seen"] = ts
+        if ts and (rec["first_seen"] is None or ts < rec["first_seen"]):
+            rec["first_seen"] = ts
+
+        if ts and ts >= today_cutoff:
+            active_today.add(uid)
+        if ts and ts >= week_cutoff:
+            active_week.add(uid)
+
+    users_list = [{
+        "user_id": uid,
+        "first_name": rec["first_name"],
+        "username": rec["username"],
+        "login_types": sorted(rec["login_types"]),
+        "login_count": rec["login_count"],
+        "message_count": msg_counts.get(uid, 0),
+        "first_seen": rec["first_seen"].isoformat() if rec["first_seen"] else None,
+        "last_seen": rec["last_seen"].isoformat() if rec["last_seen"] else None,
+    } for uid, rec in users.items()]
+    users_list.sort(key=lambda u: u["last_seen"] or "", reverse=True)
+
+    recent_logins = [{
+        "user_id": row.get("user_id"),
+        "first_name": row.get("first_name") or "",
+        "username": row.get("username") or "",
+        "login_type": row.get("login_type") or "unknown",
+        "ip_address": row.get("ip_address") or "",
+        "created_at": row.get("created_at"),
+    } for row in logins[:50]]
+
+    return {
+        "summary": {
+            "total_users": len(users_list),
+            "total_logins": len(logins),
+            "total_sessions": len(sessions),
+            "total_messages": sum(1 for m in messages if m.get("role") == "user"),
+            "active_today": len(active_today),
+            "active_7d": len(active_week),
+        },
+        "login_type_breakdown": login_type_breakdown,
+        "users": users_list,
+        "recent_logins": recent_logins,
+    }
+
+
 def verify_telegram_init_data(init_data: str, bot_token: str) -> dict | None:
     try:
         parsed = dict(urllib.parse.parse_qsl(init_data))
@@ -476,49 +680,41 @@ def auth_web():
 
 @app.route("/api/auth/google", methods=["POST"])
 def auth_google():
-    """Handle Google Identity Services login credential token."""
+    """Handle Google Identity Services login credential token.
+
+    Requires GOOGLE_CLIENT_ID to be configured and the token's signature to
+    verify successfully — there is no unverified fallback. Accepting a
+    token whose signature wasn't checked would let anyone log in as any
+    email address just by crafting a JWT with that email in it.
+    """
     data = request.json or {}
     token = data.get("credential")
     if not token:
         return jsonify({"error": "Missing Google credential token"}), 400
 
     google_client_id = os.environ.get("GOOGLE_CLIENT_ID", "")
-    id_info = None
+    if not google_client_id:
+        logger.error("GOOGLE_CLIENT_ID is not set — refusing Google login.")
+        return jsonify({"error": "Google login is not configured on this server."}), 503
 
-    # Try official google-auth verification if library and client_id exist
     try:
         from google.oauth2 import id_token
         from google.auth.transport import requests as google_requests
         id_info = id_token.verify_oauth2_token(
-            token,
-            google_requests.Request(),
-            google_client_id if google_client_id else None
+            token, google_requests.Request(), google_client_id
         )
     except Exception as e:
-        logger.warning("google-auth verify error or unconfigured client_id: %s. Falling back to JWT payload decode.", e)
+        logger.warning("Google token verification failed: %s", e)
+        return jsonify({"error": "Invalid or expired Google token."}), 401
 
-    # Fallback JWT payload decoder if google-auth verification is unconfigured
-    if not id_info:
-        try:
-            import base64
-            parts = token.split(".")
-            if len(parts) >= 2:
-                padded = parts[1] + "=" * ((4 - len(parts[1]) % 4) % 4)
-                payload_json = base64.urlsafe_b64decode(padded.encode()).decode("utf-8")
-                id_info = json.loads(payload_json)
-        except Exception as err:
-            logger.error("Failed to decode Google token: %s", err)
-            return jsonify({"error": "Invalid Google token format"}), 400
-
-    if not id_info:
-        return jsonify({"error": "Could not read Google account information"}), 400
+    if not id_info.get("email_verified", False):
+        return jsonify({"error": "Google account email is not verified."}), 401
 
     email = id_info.get("email", "")
     name = id_info.get("name") or (email.split("@")[0] if email else "Google Student")
     google_sub = id_info.get("sub") or email or name
 
     # Deterministic integer user_id
-    import hashlib
     user_id = int(hashlib.md5(f"google_{google_sub}".encode()).hexdigest(), 16) % (10**9)
     username = email.split("@")[0] if email else name.lower().replace(" ", "_")
 
@@ -555,6 +751,26 @@ def auth_google():
 def auth_logout():
     session.clear()
     return jsonify({"status": "logged_out"})
+
+
+# ── ADMIN DASHBOARD APIS ──
+
+@app.route("/api/admin/check", methods=["GET"])
+@login_required
+def admin_check():
+    """Lets the frontend know whether to show the Admin Dashboard button."""
+    return jsonify({"is_admin": is_admin_session()})
+
+
+@app.route("/api/admin/usage", methods=["GET"])
+@admin_required
+def admin_usage():
+    """Admin-only: registered users, login activity, and message counts."""
+    try:
+        return jsonify(build_usage_report())
+    except Exception as e:
+        logger.error("admin_usage error: %s", e)
+        return jsonify({"error": "Failed to build usage report"}), 500
 
 
 # login_required and security_guard are imported from security.py
