@@ -842,6 +842,93 @@
             text-transform: uppercase;
         }
 
+        /* Admin Dashboard Modal */
+        .admin-modal {
+            max-width: 940px !important;
+            height: 85vh;
+        }
+        .admin-body {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .admin-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-gray-text);
+            margin-bottom: 8px;
+        }
+        .admin-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .admin-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: var(--color-offwhite);
+            border: 1px solid var(--color-border);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-dark-gray);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .admin-table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            max-height: 320px;
+            overflow-y: auto;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+        .admin-table thead th {
+            position: sticky;
+            top: 0;
+            text-align: left;
+            background: var(--color-offwhite);
+            padding: 10px 12px;
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--color-gray-text);
+            border-bottom: 1px solid var(--color-border);
+            white-space: nowrap;
+        }
+        .admin-table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-dark-gray);
+            white-space: nowrap;
+        }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .admin-table tr:hover td { background: var(--color-light-gray); }
+        .admin-login-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            background: var(--color-offwhite);
+            border: 1px solid var(--color-border);
+        }
+        .admin-empty-state {
+            padding: 24px;
+            text-align: center;
+            color: var(--color-gray-text);
+            font-size: 13px;
+        }
+
         /* Mobile Sidebar Toggler */
         .sidebar-toggle {
             display: none;
@@ -867,6 +954,7 @@
             .sidebar.open { transform: translateX(0); }
             .suggestions-grid { grid-template-columns: 1fr; }
             .bento-grid { grid-template-columns: 1fr; }
+            .admin-modal { height: 90vh; }
             .chat-header { padding: 0 16px; }
             .search-box { width: 140px; }
         }
@@ -961,6 +1049,7 @@
                     </div>
                 </div>
                 <div style="display:flex; gap: 6px;">
+                    <button id="admin-btn" class="btn-icon hidden" title="Admin Dashboard">🛡️</button>
                     <button id="account-btn" class="btn-icon" title="Profile Dashboard">👤</button>
                     <button id="memory-btn" class="btn-icon" title="Memory">🧠</button>
                     <button id="logout-btn" class="btn-icon" title="Logout">🚪</button>
@@ -1089,6 +1178,76 @@
         </div>
     </div>
 
+    <!-- Admin Usage Dashboard Modal -->
+    <div id="admin-modal" class="modal-backdrop hidden">
+        <div class="modal-box admin-modal">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:22px;">🛡️</span>
+                    <div>
+                        <h3 style="font-size:17px;">Admin Dashboard</h3>
+                        <p style="font-size:12px; color:var(--color-gray-text);">Registered users, logins & usage</p>
+                    </div>
+                </div>
+                <button id="close-admin-modal" class="btn-icon" style="border:none;font-size:18px;">✕</button>
+            </div>
+            <div class="modal-body admin-body">
+                <div id="admin-summary-grid" class="bento-grid">
+                    <div class="bento-card">
+                        <span class="bento-label">Total Users</span>
+                        <span class="bento-val" id="admin-total-users" style="color:var(--color-blue-dark);">0</span>
+                    </div>
+                    <div class="bento-card">
+                        <span class="bento-label">Active Today</span>
+                        <span class="bento-val" id="admin-active-today" style="color:var(--color-green);">0</span>
+                    </div>
+                    <div class="bento-card">
+                        <span class="bento-label">Active (7 Days)</span>
+                        <span class="bento-val" id="admin-active-week" style="color:#D97706;">0</span>
+                    </div>
+                    <div class="bento-card">
+                        <span class="bento-label">Total Messages</span>
+                        <span class="bento-val" id="admin-total-messages">0</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="admin-section-title">Logins by Method</div>
+                    <div id="admin-login-breakdown" class="admin-pills"></div>
+                </div>
+
+                <div>
+                    <div class="admin-section-title">Users</div>
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Username / ID</th>
+                                    <th>Login Method</th>
+                                    <th>Logins</th>
+                                    <th>Messages</th>
+                                    <th>First Seen</th>
+                                    <th>Last Seen</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-tbody">
+                                <tr><td colspan="7" class="admin-empty-state">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="admin-section-title">Recent Logins</div>
+                    <div id="admin-recent-logins" style="display:flex;flex-direction:column;gap:6px;">
+                        <div class="admin-empty-state">Loading recent logins...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Memory Details Modal -->
     <div id="memory-modal" class="modal-backdrop hidden">
         <div class="modal-box">
@@ -1180,6 +1339,9 @@
         const memoryModal = document.getElementById("memory-modal");
         const memoryBtn = document.getElementById("memory-btn");
         const logoutBtn = document.getElementById("logout-btn");
+        const adminModal = document.getElementById("admin-modal");
+        const adminBtn = document.getElementById("admin-btn");
+        const closeAdminModalBtn = document.getElementById("close-admin-modal");
 
         const tg = window.Telegram ? window.Telegram.WebApp : null;
 
@@ -1222,6 +1384,8 @@
             accountBtn.addEventListener("click", openAccountModal);
             memoryBtn.addEventListener("click", openMemoryModal);
             logoutBtn.addEventListener("click", logout);
+            if (adminBtn) adminBtn.addEventListener("click", openAdminDashboard);
+            if (closeAdminModalBtn) closeAdminModalBtn.addEventListener("click", () => adminModal.classList.add("hidden"));
 
             document.querySelectorAll(".close-modal-btn").forEach(btn => {
                 btn.addEventListener("click", () => {
@@ -1435,6 +1599,7 @@
 
             initializeChatOnOpen();
             loadProfileStats();
+            checkAdminStatus();
             startSyncPolling();
         }
 
@@ -1745,6 +1910,105 @@
         function escapeHtml(str) {
             if (!str) return "";
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // ── Admin Dashboard ──
+        async function checkAdminStatus() {
+            try {
+                const resp = await fetch("/api/admin/check");
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data.is_admin && adminBtn) adminBtn.classList.remove("hidden");
+                }
+            } catch (e) {}
+        }
+
+        async function openAdminDashboard() {
+            adminModal.classList.remove("hidden");
+            const tbody = document.getElementById("admin-users-tbody");
+            const loginsBox = document.getElementById("admin-recent-logins");
+            tbody.innerHTML = `<tr><td colspan="7" class="admin-empty-state">Loading users...</td></tr>`;
+            loginsBox.innerHTML = `<div class="admin-empty-state">Loading recent logins...</div>`;
+
+            try {
+                const resp = await fetch("/api/admin/usage");
+                if (resp.status === 403 || resp.status === 401) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="admin-empty-state">You don't have admin access.</td></tr>`;
+                    loginsBox.innerHTML = "";
+                    return;
+                }
+                if (!resp.ok) throw new Error("Failed to load usage data");
+                const data = await resp.json();
+                renderAdminUsage(data);
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="7" class="admin-empty-state">Couldn't load usage data. Try again shortly.</td></tr>`;
+                loginsBox.innerHTML = "";
+            }
+        }
+
+        function fmtDateTime(iso) {
+            if (!iso) return "—";
+            try {
+                const d = new Date(iso);
+                return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " +
+                       d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+            } catch (e) { return iso; }
+        }
+
+        function renderAdminUsage(data) {
+            const s = data.summary || {};
+            document.getElementById("admin-total-users").innerText = s.total_users ?? 0;
+            document.getElementById("admin-active-today").innerText = s.active_today ?? 0;
+            document.getElementById("admin-active-week").innerText = s.active_7d ?? 0;
+            document.getElementById("admin-total-messages").innerText = s.total_messages ?? 0;
+
+            const breakdownEl = document.getElementById("admin-login-breakdown");
+            breakdownEl.innerHTML = "";
+            const breakdown = data.login_type_breakdown || {};
+            const typeIcons = { telegram_webapp: "✈️", google: "🔵", web: "🌐" };
+            const entries = Object.entries(breakdown);
+            if (entries.length === 0) {
+                breakdownEl.innerHTML = `<span style="font-size:12px;color:var(--color-gray-text);">No logins recorded yet.</span>`;
+            } else {
+                entries.forEach(([type, count]) => {
+                    const pill = document.createElement("span");
+                    pill.className = "admin-pill";
+                    pill.innerText = `${typeIcons[type] || "👤"} ${type}: ${count}`;
+                    breakdownEl.appendChild(pill);
+                });
+            }
+
+            const tbody = document.getElementById("admin-users-tbody");
+            const users = data.users || [];
+            if (users.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="admin-empty-state">No users have logged in yet.</td></tr>`;
+            } else {
+                tbody.innerHTML = users.map(u => `
+                    <tr>
+                        <td>${escapeHtml(u.first_name || "—")}</td>
+                        <td class="font-mono">${u.username ? "@" + escapeHtml(u.username) : u.user_id}</td>
+                        <td>${(u.login_types || []).map(escapeHtml).join(", ")}</td>
+                        <td>${u.login_count ?? 0}</td>
+                        <td>${u.message_count ?? 0}</td>
+                        <td>${fmtDateTime(u.first_seen)}</td>
+                        <td>${fmtDateTime(u.last_seen)}</td>
+                    </tr>
+                `).join("");
+            }
+
+            const loginsBox = document.getElementById("admin-recent-logins");
+            const recent = data.recent_logins || [];
+            if (recent.length === 0) {
+                loginsBox.innerHTML = `<div class="admin-empty-state">No recent logins.</div>`;
+            } else {
+                loginsBox.innerHTML = recent.map(r => `
+                    <div class="admin-login-row">
+                        <span><strong>${escapeHtml(r.first_name || "Unknown")}</strong> ${r.username ? "@" + escapeHtml(r.username) : ""}
+                            <span style="color:var(--color-gray-text);">via ${escapeHtml(r.login_type)}</span></span>
+                        <span class="font-mono" style="color:var(--color-gray-text);">${fmtDateTime(r.created_at)}</span>
+                    </div>
+                `).join("");
+            }
         }
 
         // ── Profile Stats ──
