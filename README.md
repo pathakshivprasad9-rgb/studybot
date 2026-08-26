@@ -18,8 +18,8 @@
 
 Whether you need deep explanations for physics concepts, real-time web search, interactive flashcards, or just a quick joke, BRAINY handles it all natively through natural language intent detection.
 
-<p>**Unlock your access:-** https://brainyai.up.railway.app
-Sign in with **Google/Telegram**.</p>
+<b>Unlock your access:-</b> https://brainyai.up.railway.app<br>
+Sign in with **Google/Telegram**.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## 🔧 Tech Stack
