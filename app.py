@@ -48,9 +48,13 @@ app.config["PERMANENT_SESSION_LIFETIME"] = 86400  # 24 hours
 
 
 # ── ADMIN ACCESS CONTROL ──
-# Admins are whoever is already logged in (via Telegram, Google, or web
-# login) AND whose user_id or username appears in these allowlists.
-# Set ADMIN_USER_IDS and/or ADMIN_USERNAMES in your environment variables.
+# Admins are whoever is already logged in AND matches one of these
+# allowlists: user_id, username, or (for Google logins) verified email.
+# The email check is the strongest one — it's tied to the verified email
+# Google Identity Services returns, not something a user can self-report.
+# Override/extend via ADMIN_USER_IDS, ADMIN_USERNAMES, ADMIN_EMAILS env vars.
+DEFAULT_ADMIN_EMAILS = {"shreyansh101008@gmail.com"}
+
 def _parse_admin_allowlist():
     ids = set()
     for part in os.environ.get("ADMIN_USER_IDS", "").split(","):
@@ -62,17 +66,25 @@ def _parse_admin_allowlist():
         part = part.strip().lstrip("@").lower()
         if part:
             names.add(part)
-    return ids, names
+    emails = set(DEFAULT_ADMIN_EMAILS)
+    for part in os.environ.get("ADMIN_EMAILS", "").split(","):
+        part = part.strip().lower()
+        if part:
+            emails.add(part)
+    return ids, names, emails
 
-ADMIN_USER_IDS, ADMIN_USERNAMES = _parse_admin_allowlist()
+ADMIN_USER_IDS, ADMIN_USERNAMES, ADMIN_EMAILS = _parse_admin_allowlist()
 
 
 def is_admin_session() -> bool:
     uid = session.get("user_id")
     uname = (session.get("username") or "").lstrip("@").lower()
+    email = (session.get("email") or "").strip().lower()
     if uid is not None and uid in ADMIN_USER_IDS:
         return True
     if uname and uname in ADMIN_USERNAMES:
+        return True
+    if email and email in ADMIN_EMAILS:
         return True
     return False
 
@@ -559,6 +571,7 @@ def auth_status(session_id):
         session["user_id"] = user["id"]
         session["first_name"] = user["first_name"]
         session["username"] = user.get("username", "")
+        session["email"] = ""  # Telegram logins have no verified email
         auth_sessions.pop(session_id, None)
         return jsonify({"status": "authenticated", "user": user})
 
@@ -625,6 +638,7 @@ def auth_initdata():
         session["user_id"] = user_data["id"]
         session["first_name"] = user_data["first_name"]
         session["username"] = user_data.get("username", "")
+        session["email"] = ""  # Telegram logins have no verified email
 
         # Record login in Supabase
         sb_record_login(
@@ -654,6 +668,7 @@ def auth_web():
     session["user_id"] = user_id
     session["first_name"] = name
     session["username"] = username
+    session["email"] = ""  # self-reported web logins have no verified email
 
     # Ensure user is registered in memory & Supabase
     study_bot.load_user_into_memory(user_id, name, username)
@@ -721,6 +736,7 @@ def auth_google():
     session["user_id"] = user_id
     session["first_name"] = name
     session["username"] = username
+    session["email"] = email.strip().lower()  # verified by Google — safe to gate admin access on
 
     # Ensure user memory in study_bot
     study_bot.load_user_into_memory(user_id, name, username)
