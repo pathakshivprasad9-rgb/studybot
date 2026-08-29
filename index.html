@@ -236,58 +236,200 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37,99,235, 0); }
         }
 
+        /* ── LOGIN SCREEN — Split Panel Layout ─────────────────── */
         .login-wrapper {
             position: fixed;
             inset: 0;
-            background-color: var(--surface2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
             z-index: 1000;
-            padding: 20px;
+            display: flex;
+            background: var(--surface);
         }
-        .login-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-xl);
-            width: 100%;
-            max-width: 420px;
-            padding: 40px 32px;
-            text-align: center;
-            box-shadow: var(--shadow-lg);
+
+        /* LEFT PANEL — Study visual */
+        .login-left {
+            flex: 1;
+            background: linear-gradient(145deg, #1a1040 0%, #2d1b6b 40%, #1a3a5c 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 48px;
             position: relative;
             overflow: hidden;
         }
-        .login-card::before {
-            content: "";
+
+        /* Floating glowing orbs */
+        .login-left::before {
+            content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(99,102,241,0.35) 0%, transparent 65%);
+            top: -80px; left: -80px;
+            border-radius: 50%;
+            pointer-events: none;
         }
-        .login-badge {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-radius: var(--radius-md);
-            display: inline-flex;
+        .login-left::after {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 65%);
+            bottom: 40px; right: -60px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .login-left-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+        }
+        .login-left-logo-mark {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #6366F1, #EC4899);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 20px; color: #fff;
+        }
+        .login-left-logo-text {
+            font-size: 22px; font-weight: 800; color: #fff;
+            letter-spacing: -0.02em;
+        }
+
+        /* Study illustration container */
+        .study-illustration {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-bottom: 16px;
+        }
+
+        /* SVG-based study scene */
+        .study-scene {
+            width: 100%; max-width: 380px;
+        }
+
+        /* Floating academic tags */
+        .float-tag {
+            position: absolute;
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.18);
+            backdrop-filter: blur(8px);
+            border-radius: 10px;
+            padding: 8px 14px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            white-space: nowrap;
+        }
+        .float-tag-1 { top: 18%; left: 6%; animation: floatY 3.2s ease-in-out infinite; }
+        .float-tag-2 { top: 32%; right: 4%; animation: floatY 4s ease-in-out infinite 0.8s; }
+        .float-tag-3 { bottom: 28%; left: 8%; animation: floatY 3.6s ease-in-out infinite 1.4s; }
+        .float-tag-4 { bottom: 14%; right: 6%; animation: floatY 2.8s ease-in-out infinite 0.4s; }
+        @keyframes floatY {
+            0%,100% { transform: translateY(0px); }
+            50%      { transform: translateY(-10px); }
+        }
+
+        /* Left panel bottom tagline */
+        .login-left-footer {
+            position: relative;
+            z-index: 2;
+        }
+        .login-left-tagline {
+            color: #fff;
+            font-size: 30px;
             font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
         }
-        .login-title {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 28px;
-            margin-bottom: 8px;
+        .login-left-sub {
+            color: rgba(255,255,255,0.55);
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 340px;
         }
+
+        /* Study stats row */
+        .login-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 28px;
+        }
+        .login-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .login-stat-val {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .login-stat-label {
+            color: rgba(255,255,255,0.45);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        /* RIGHT PANEL — Form */
+        .login-right {
+            width: 440px;
+            flex-shrink: 0;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 40px;
+            overflow-y: auto;
+        }
+        .login-form-box {
+            width: 100%;
+            max-width: 360px;
+        }
+        .login-form-box h2 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .login-form-box p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+        .login-form-box p span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .login-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .login-input-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            display: block;
+            margin-bottom: 5px;
+        }
+
         .divider {
             position: relative;
-            margin: 24px 0;
+            margin: 20px 0;
             text-align: center;
         }
         .divider::before {
@@ -299,12 +441,19 @@
         }
         .divider span {
             position: relative;
-            background-color: var(--bg);
+            background-color: var(--surface);
             padding: 0 12px;
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-weight: 700;
+            color: var(--text-light);
+            letter-spacing: 0.06em;
+        }
+
+        /* On mobile, hide left panel */
+        @media (max-width: 768px) {
+            .login-left { display: none; }
+            .login-right { width: 100%; padding: 32px 24px; }
         }
 
         .app-layout {
@@ -717,38 +866,156 @@
     </div>
 
     <div id="login-container" class="login-wrapper hidden">
-        <div class="login-card">
-            <div class="login-badge">B</div>
-            <h1 class="login-title">BRAINY</h1>
-            <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 24px;">AI Study Companion</p>
-            
-            <div style="display:flex; flex-direction:column; gap:12px;">
-                <button id="tg-login-btn" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 15px;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2"/></svg>
-                    Continue with Telegram
-                </button>
-                <div id="google-btn-container" style="width: 100%; display: flex; justify-content: center;"></div>
+
+        <!-- LEFT PANEL: Study Visual -->
+        <div class="login-left">
+            <!-- Logo -->
+            <div class="login-left-logo">
+                <div class="login-left-logo-mark">B</div>
+                <span class="login-left-logo-text">BRAINY</span>
             </div>
 
-            <div id="desktop-login-status" class="hidden" style="margin-top: 14px;">
-                <p style="color: var(--warning); font-size: 13px; font-weight: 600;">Confirm login in your Telegram app...</p>
+            <!-- Floating academic tags -->
+            <div class="float-tag float-tag-1">📐 E = mc²</div>
+            <div class="float-tag float-tag-2">🧬 DNA Replication</div>
+            <div class="float-tag float-tag-3">💡 Pointers in C</div>
+            <div class="float-tag float-tag-4">📊 Data Structures</div>
+
+            <!-- Study SVG Illustration -->
+            <div class="study-illustration">
+                <svg class="study-scene" viewBox="0 0 360 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Desk surface -->
+                    <rect x="30" y="200" width="300" height="12" rx="6" fill="rgba(255,255,255,0.12)"/>
+
+                    <!-- Book stack (back) -->
+                    <rect x="55" y="155" width="70" height="46" rx="5" fill="#6366F1" opacity="0.85"/>
+                    <rect x="58" y="155" width="5" height="46" rx="2" fill="rgba(255,255,255,0.25)"/>
+                    <text x="82" y="183" fill="rgba(255,255,255,0.7)" font-size="9" font-family="Inter,sans-serif" font-weight="700">PHYSICS</text>
+
+                    <!-- Book stack (middle) -->
+                    <rect x="60" y="143" width="60" height="14" rx="4" fill="#EC4899" opacity="0.85"/>
+
+                    <!-- Book stack (front) -->
+                    <rect x="62" y="130" width="56" height="14" rx="4" fill="#10B981" opacity="0.85"/>
+
+                    <!-- Open laptop -->
+                    <rect x="140" y="140" width="160" height="62" rx="8" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+                    <!-- Screen -->
+                    <rect x="148" y="147" width="144" height="48" rx="4" fill="#0F172A" opacity="0.8"/>
+                    <!-- Code lines on screen -->
+                    <rect x="155" y="154" width="60" height="4" rx="2" fill="#6366F1" opacity="0.9"/>
+                    <rect x="155" y="162" width="85" height="4" rx="2" fill="#10B981" opacity="0.7"/>
+                    <rect x="155" y="170" width="48" height="4" rx="2" fill="#EC4899" opacity="0.7"/>
+                    <rect x="155" y="178" width="70" height="4" rx="2" fill="#6366F1" opacity="0.5"/>
+                    <rect x="155" y="186" width="40" height="4" rx="2" fill="#F59E0B" opacity="0.7"/>
+                    <!-- Cursor blink -->
+                    <rect x="200" y="186" width="2" height="8" rx="1" fill="white" opacity="0.9">
+                        <animate attributeName="opacity" values="0.9;0;0.9" dur="1.2s" repeatCount="indefinite"/>
+                    </rect>
+                    <!-- Keyboard base -->
+                    <rect x="148" y="200" width="144" height="8" rx="4" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+
+                    <!-- Coffee mug -->
+                    <rect x="310" y="170" width="28" height="32" rx="5" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+                    <path d="M338 180 Q348 183 338 190" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" fill="none"/>
+                    <!-- Steam -->
+                    <path d="M319 167 Q322 160 319 153" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none" stroke-linecap="round">
+                        <animate attributeName="opacity" values="0.25;0.05;0.25" dur="2s" repeatCount="indefinite"/>
+                    </path>
+                    <path d="M325 165 Q328 158 325 150" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" fill="none" stroke-linecap="round">
+                        <animate attributeName="opacity" values="0.18;0.02;0.18" dur="2.4s" repeatCount="indefinite"/>
+                    </path>
+
+                    <!-- Pencil -->
+                    <rect x="100" y="197" width="38" height="6" rx="3" fill="#F59E0B" opacity="0.8"/>
+                    <polygon points="138,197 138,203 144,200" fill="#FCD34D" opacity="0.9"/>
+
+                    <!-- Floating formula bubble -->
+                    <g transform="translate(20,55)">
+                        <rect width="110" height="38" rx="10" fill="rgba(99,102,241,0.25)" stroke="rgba(99,102,241,0.5)" stroke-width="1"/>
+                        <text x="12" y="23" fill="white" font-size="13" font-family="JetBrains Mono,monospace" opacity="0.9">∫ f(x) dx = F(x)</text>
+                        <animate attributeName="transform" values="translate(20,55);translate(20,48);translate(20,55)" dur="4s" repeatCount="indefinite"/>
+                    </g>
+
+                    <!-- Stars/sparkles -->
+                    <circle cx="290" cy="60" r="2.5" fill="#F59E0B" opacity="0.8">
+                        <animate attributeName="r" values="2.5;4;2.5" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="50" cy="100" r="2" fill="#EC4899" opacity="0.7">
+                        <animate attributeName="r" values="2;3.5;2" dur="2.8s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="330" cy="100" r="1.5" fill="#10B981" opacity="0.7">
+                        <animate attributeName="r" values="1.5;3;1.5" dur="3.2s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="160" cy="40" r="2" fill="#6366F1" opacity="0.8">
+                        <animate attributeName="r" values="2;4;2" dur="2.5s" repeatCount="indefinite"/>
+                    </circle>
+                </svg>
             </div>
 
-            <div class="divider"><span>OR</span></div>
+            <!-- Footer tagline -->
+            <div class="login-left-footer">
+                <div class="login-left-tagline">Study smarter.<br>Learn faster.</div>
+                <div class="login-left-sub">Your AI companion that breaks down complex topics, reviews code, and keeps you focused — no fluff, just clarity.</div>
+                <div class="login-stats">
+                    <div class="login-stat">
+                        <span class="login-stat-val">50+</span>
+                        <span class="login-stat-label">Topics/day</span>
+                    </div>
+                    <div class="login-stat">
+                        <span class="login-stat-val">∞</span>
+                        <span class="login-stat-label">Patience</span>
+                    </div>
+                    <div class="login-stat">
+                        <span class="login-stat-val">24/7</span>
+                        <span class="login-stat-label">Available</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <form id="web-login-form" style="display: flex; flex-direction: column; gap: 16px; text-align: left;">
-                <div>
-                    <label style="font-size: 13px; font-weight: 600; color: var(--text); display: block; margin-bottom: 6px;">Your Name</label>
-                    <input type="text" id="web-login-name" placeholder="e.g. Shrey Pathak" required>
+        <!-- RIGHT PANEL: Login Form -->
+        <div class="login-right">
+            <div class="login-form-box">
+                <h2>Welcome Back! 👋</h2>
+                <p>Sign in to continue your study sessions with <span>BRAINY</span>.</p>
+
+                <!-- Telegram + Google -->
+                <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:8px;">
+                    <button id="tg-login-btn" class="btn btn-primary" style="width:100%; padding:14px; font-size:14px; border-radius:12px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2"/></svg>
+                        Continue with Telegram
+                    </button>
+                    <div id="google-btn-container" style="width:100%; display:flex; justify-content:center;"></div>
                 </div>
-                <div>
-                    <label style="font-size: 13px; font-weight: 600; color: var(--text); display: block; margin-bottom: 6px;">Username (Optional)</label>
-                    <input type="text" id="web-login-username" placeholder="e.g. shrey_08">
+
+                <div id="desktop-login-status" class="hidden" style="margin: 10px 0;">
+                    <p style="color:var(--warning); font-size:13px; font-weight:600; text-align:center;">Confirm login in your Telegram app...</p>
                 </div>
-                <button type="submit" id="web-login-submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-weight: 700; margin-top: 8px;">
-                    Start Learning →
-                </button>
-            </form>
+
+                <div class="divider"><span>or sign in with name</span></div>
+
+                <!-- Web Login Form -->
+                <form id="web-login-form">
+                    <div class="login-input-group">
+                        <div>
+                            <label class="login-input-label" for="web-login-name">Your Name</label>
+                            <input type="text" id="web-login-name" placeholder="e.g. Shrey Pathak" required>
+                        </div>
+                        <div>
+                            <label class="login-input-label" for="web-login-username">Username <span style="color:var(--text-light);font-weight:400;">(optional)</span></label>
+                            <input type="text" id="web-login-username" placeholder="e.g. shrey_08">
+                        </div>
+                    </div>
+                    <button type="submit" id="web-login-submit" class="btn btn-primary" style="width:100%; padding:14px; font-size:14px; border-radius:12px;">
+                        Start Learning →
+                    </button>
+                </form>
+
+                <p style="text-align:center; margin-top:24px; font-size:12px; color:var(--text-light);">
+                    BRAINY is an educational AI companion.<br>Verify critical facts & formulas independently.
+                </p>
+            </div>
         </div>
     </div>
 
