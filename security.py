@@ -203,7 +203,12 @@ def security_guard(f):
     1. Rate limit check (per IP)
     2. Blacklist scan on GET query params
     3. Blacklist scan on POST/PUT/PATCH JSON body values
+    Note: /api/auth/google and /api/auth/initdata are exempt from body
+    blacklist scanning since they receive opaque JWT/credential tokens.
     """
+    # Routes exempt from body blacklist scanning (they receive JWT tokens)
+    BODY_SCAN_EXEMPT = {"/api/auth/google", "/api/auth/initdata"}
+
     @wraps(f)
     def decorated(*args, **kwargs):
         ip = request.remote_addr or "unknown"
@@ -220,8 +225,8 @@ def security_guard(f):
                     log_security_event("blacklist_match", ip, session.get("user_id"), f"GET param: {key}")
                     return jsonify({"error": "Invalid input detected"}), 403
 
-        # Check POST/PUT/PATCH JSON body
-        if request.method in ['POST', 'PUT', 'PATCH']:
+        # Check POST/PUT/PATCH JSON body (skip for auth token endpoints)
+        if request.method in ['POST', 'PUT', 'PATCH'] and request.path not in BODY_SCAN_EXEMPT:
             data = request.get_json(silent=True) or {}
             for key, value in data.items():
                 if isinstance(value, str) and is_blacklisted(value):
@@ -271,14 +276,15 @@ def security_headers(response):
     """
     response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' https://telegram.org https://cdnjs.cloudflare.com https://accounts.google.com https://accounts.google.com/gsi/client; "
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; "
+        "script-src 'self' 'unsafe-inline' https://telegram.org https://cdnjs.cloudflare.com "
+        "https://accounts.google.com https://apis.google.com; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
         "font-src 'self' https://fonts.gstatic.com; "
-        "img-src 'self' data: https://*.googleusercontent.com; "
+        "img-src 'self' data: https://*.googleusercontent.com https://lh3.googleusercontent.com; "
         "frame-src https://accounts.google.com; "
-        "connect-src 'self' https://accounts.google.com"
+        "connect-src 'self' https://accounts.google.com https://oauth2.googleapis.com"
     )
-    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     response.headers['Permissions-Policy'] = 'geolocation=(self), microphone=()'
